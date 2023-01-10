@@ -71,19 +71,19 @@ const handleChatTransferAction = async (payload) => {
 };
 
 const sendTransferRequest = async (transferPayload) => {
-  const body = {
-    Payload: JSON.stringify(transferPayload),
+  const body = JSON.stringify({
+    Payload: transferPayload,
     Token:
       Manager.getInstance().store.getState().flex.session.ssoTokenPayload.token,
-  };
+  });
 
   console.log("DEBUG ***", body);
 
   const options = {
     method: "POST",
-    body: new URLSearchParams(body),
+    body: body,
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+      "Content-Type": "application/json",
     },
   };
   try {

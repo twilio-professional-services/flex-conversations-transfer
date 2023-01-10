@@ -38,18 +38,16 @@ exports.handler = TokenValidator(async function (context, event, callback) {
   response.appendHeader("Content-Type", "application/json");
   response.setBody({ sucess: true });
 
-  const Payload = JSON.parse(event.Payload);
-
   const {
     flexInteractionSid,
     flexInteractionChannelSid,
     flexInteractionParticipantSid,
-  } = Payload.interactionDetails;
+  } = event.Payload.interactionDetails;
 
   const { transferTargetSid, transferQueueName, transferTargetType } =
-    Payload.transferDetails;
+    event.Payload.transferDetails;
 
-  const { transferringWorkerSid, transferringTaskAttributes } = Payload;
+  const { transferringWorkerSid, transferringTaskAttributes } = event.Payload;
 
   //remove agent from conversation but leave the conversation/interaction active
   await client.flexApi.v1
