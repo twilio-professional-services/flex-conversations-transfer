@@ -36,7 +36,6 @@ exports.handler = TokenValidator(async function (context, event, callback) {
   response.appendHeader("Access-Control-Allow-Methods", "OPTIONS POST GET");
   response.appendHeader("Access-Control-Allow-Headers", "Content-Type");
   response.appendHeader("Content-Type", "application/json");
-  response.setBody({ sucess: true });
 
   const {
     flexInteractionSid,
@@ -49,29 +48,35 @@ exports.handler = TokenValidator(async function (context, event, callback) {
 
   const { transferringWorkerSid, transferringTaskAttributes } = event.Payload;
 
-  //remove agent from conversation but leave the conversation/interaction active
-  await client.flexApi.v1
-    .interaction(flexInteractionSid)
-    .channels(flexInteractionChannelSid)
-    .participants(flexInteractionParticipantSid)
-    .update({ status: "closed" });
+  try {
+    // //remove agent from conversation but leave the conversation/interaction active
+    await client.flexApi.v1
+      .interaction(flexInteractionSid)
+      .channels(flexInteractionChannelSid)
+      .participants(flexInteractionParticipantSid)
+      .update({ status: "closed" });
 
-  // invite a new agent to the conversation/interaction
-  const routingParams = getRoutingParams(
-    context,
-    transferringTaskAttributes,
-    transferTargetType,
-    transferTargetSid,
-    transferQueueName,
-    transferringWorkerSid
-  );
+    // invite a new agent to the conversation/interaction
+    const routingParams = getRoutingParams(
+      context,
+      transferringTaskAttributes,
+      transferTargetType,
+      transferTargetSid,
+      transferQueueName,
+      transferringWorkerSid
+    );
 
-  const participantInvite = await client.flexApi.v1
-    .interaction(flexInteractionSid)
-    .channels(flexInteractionChannelSid)
-    .invites.create({
-      routing: routingParams,
-    });
-
-  callback(null, response);
+    const participantInvite = await client.flexApi.v1
+      .interaction(flexInteractionSid)
+      .channels(flexInteractionChannelSid)
+      .invites.create({
+        routing: routingParams,
+      });
+    response.setBody({ sucess: true });
+    callback(null, response);
+  } catch (error) {
+    console.error("Error in transferConversation function");
+    response.setBody({ success: false, error });
+    callback(null, response);
+  }
 });

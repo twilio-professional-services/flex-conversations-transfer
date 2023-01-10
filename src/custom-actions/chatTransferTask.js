@@ -77,8 +77,6 @@ const sendTransferRequest = async (transferPayload) => {
       Manager.getInstance().store.getState().flex.session.ssoTokenPayload.token,
   });
 
-  console.log("DEBUG ***", body);
-
   const options = {
     method: "POST",
     body: body,
@@ -92,7 +90,14 @@ const sendTransferRequest = async (transferPayload) => {
       options
     );
     const data = await resp.json();
+
+    if (!data.success) {
+      console.error(
+        "transferConversation request failed. Error reported from function:",
+        data.error
+      );
+    }
   } catch (e) {
-    console.error(e);
+    console.error("Error making reqeust to transferConversation", e);
   }
 };
