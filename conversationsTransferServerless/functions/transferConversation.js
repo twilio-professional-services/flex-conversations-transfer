@@ -73,10 +73,10 @@ exports.handler = TokenValidator(async function (context, event, callback) {
         routing: routingParams,
       });
     response.setBody({ sucess: true });
-    callback(null, response);
+    return callback(null, response);
   } catch (error) {
     console.error("Error in transferConversation function");
     response.setBody({ success: false, error });
-    callback(null, response);
+    return callback(null, response);
   }
 });
