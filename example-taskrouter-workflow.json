@@ -1,0 +1,38 @@
+{
+  "task_routing": {
+    "filters": [
+      {
+        "filter_friendly_name": "Assign to Worker",
+        "expression": "transferTargetType == 'worker'",
+        "targets": [
+          {
+            "queue": "WQaaaaa",
+            "known_worker_sid": "task.transferTargetSid"
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "Assign to Queue - Everyone",
+        "expression": "transferQueueName == 'Everyone'",
+        "targets": [
+          {
+            "queue": "WQbbbb",
+            "expression": "worker.contact_uri != task.ignoreWorkerContactUri"
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "Sales",
+        "expression": "transferQueueName == 'Sales'",
+        "targets": [
+          {
+            "queue": "WQcccc",
+            "expression": "wworker.contact_uri != task.ignoreWorkerContactUri"
+          }
+        ]
+      },
+
+    ]
+  }
+}
+
