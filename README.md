@@ -33,6 +33,7 @@ This plugin is intentionally a minmial implementation for transfers that is inte
 - All task attributes are copied from the original task to the transferring task. This could have reporting implications and you may want to consider using the [conversations.conversation_id](https://www.twilio.com/docs/flex/developer/insights/enhance-integration#link-tasks-to-a-conversation) in all tasks related to the Conversation.
 - The Interactions Channel Participant API update moves the Status to closed rather than wrapping. You may want to consider if moving to a [wrapping state](https://www.twilio.com/docs/flex/developer/conversations/interactions-api/interaction-channel-participants?code-sample=code-wrap-up-agent-reservation&code-language=curl&code-sdk-version=json) if required.
 - After initiating a transfer the expectation is that this will complete quickly and the task will be moved to completed and there we don't try and add logic for disabling the transfer button. In a production enviroment tracking which tasks have had a transfer initiated and disabling the button or replacing with a spinner if this task is selected would ensure that even if the API request takes several seconds the agent experience is as expected.
+- Warm transfer or multiple agents in the same Conversation at the same time is not supported by this plugin. A POC of implemenation for this is available [here](https://github.com/twilio-professional-services/flex-project-template/tree/main/plugin-flex-ts-template-v2/src/feature-library/conversation-transfer)
 
 # Setup
 
