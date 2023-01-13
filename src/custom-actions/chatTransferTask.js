@@ -61,6 +61,7 @@ const handleChatTransferAction = async (payload) => {
     transferDetails,
     transferringWorkerSid: Manager.getInstance().workerClient.sid,
     transferringTaskAttributes: JSON.stringify(task.attributes),
+    taskRouterChannel: task.taskChannelUniqueName,
   };
 
   try {
@@ -86,7 +87,7 @@ const sendTransferRequest = async (transferPayload) => {
   };
   try {
     const resp = await fetch(
-      `https://${process.env.FLEX_APP_TWILIO_SERVERLESS_DOMAIN}/transferConversation`,
+      `${process.env.FLEX_APP_TWILIO_SERVERLESS_DOMAIN}/transferConversation`,
       options
     );
     const data = await resp.json();

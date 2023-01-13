@@ -5,7 +5,8 @@ const getRoutingParams = (
   transferTargetType,
   transferTargetSid,
   transferQueueName,
-  ignoreWorkerContactUri
+  ignoreWorkerContactUri,
+  taskRouterChannel
 ) => {
   const originalTaskAttributes = JSON.parse(jsonAttributes);
   const newAttributes = {
@@ -18,7 +19,7 @@ const getRoutingParams = (
 
   const routingParams = {
     properties: {
-      task_channel_unique_name: "chat",
+      task_channel_unique_name: taskRouterChannel,
       workspace_sid: context.TWILIO_FLEX_WORKSPACE_SID,
       workflow_sid: context.TWILIO_FLEX_CHAT_TRANSFER_WORKFLOW_SID,
       attributes: newAttributes,
@@ -46,7 +47,11 @@ exports.handler = TokenValidator(async function (context, event, callback) {
   const { transferTargetSid, transferQueueName, transferTargetType } =
     event.Payload.transferDetails;
 
-  const { transferringWorkerSid, transferringTaskAttributes } = event.Payload;
+  const {
+    transferringWorkerSid,
+    transferringTaskAttributes,
+    taskRouterChannel,
+  } = event.Payload;
 
   try {
     // //remove agent from conversation but leave the conversation/interaction active
@@ -63,7 +68,8 @@ exports.handler = TokenValidator(async function (context, event, callback) {
       transferTargetType,
       transferTargetSid,
       transferQueueName,
-      transferringWorkerSid
+      transferringWorkerSid,
+      taskRouterChannel
     );
 
     const participantInvite = await client.flexApi.v1
@@ -75,7 +81,7 @@ exports.handler = TokenValidator(async function (context, event, callback) {
     response.setBody({ sucess: true });
     return callback(null, response);
   } catch (error) {
-    console.error("Error in transferConversation function");
+    console.error("Error in transferConversation function:", error);
     response.setBody({ success: false, error });
     return callback(null, response);
   }
