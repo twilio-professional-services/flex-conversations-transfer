@@ -53,6 +53,14 @@ exports.handler = TokenValidator(async function (context, event, callback) {
     taskRouterChannel,
   } = event.Payload;
 
+  const updatedTaskAttributes = JSON.parse(transferringTaskAttributes);
+
+  // Subsequent interactions invites will have a different sid
+  // The interactions invite sid is automatically added to the task attibutes by Flex Conversations / Interactions orchestration
+  if (updatedTaskAttributes?.flexChannelInviteSid) {
+    delete updatedTaskAttributes.flexChannelInviteSid;
+  }
+
   try {
     // //remove agent from conversation but leave the conversation/interaction active
     await client.flexApi.v1
@@ -64,7 +72,7 @@ exports.handler = TokenValidator(async function (context, event, callback) {
     // invite a new agent to the conversation/interaction
     const routingParams = getRoutingParams(
       context,
-      transferringTaskAttributes,
+      JSON.stringify(updatedTaskAttributes),
       transferTargetType,
       transferTargetSid,
       transferQueueName,
@@ -78,7 +86,7 @@ exports.handler = TokenValidator(async function (context, event, callback) {
       .invites.create({
         routing: routingParams,
       });
-    response.setBody({ sucess: true });
+    response.setBody({ success: true });
     return callback(null, response);
   } catch (error) {
     console.error("Error in transferConversation function:", error);
